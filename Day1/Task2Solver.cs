@@ -1,6 +1,6 @@
 namespace Day1;
 
-public class Task1Solver {
+public class Task2Solver {
 	public int Solve(string input) {
 		var combinations = input
 			.Split('\n', StringSplitOptions.RemoveEmptyEntries)
@@ -9,19 +9,29 @@ public class Task1Solver {
 
 		const int start = 50;
 
-		var zerosCount = SumCombinations(start, combinations);
+		var zerosCount = FindZeros(start, combinations);
 
 		return zerosCount;
 	}
 
-	private int SumCombinations(int currentPosition, IEnumerable<Combination> combinations) {
+	private int FindZeros(int currentPosition, IEnumerable<Combination> combinations) {
 		var zerosCount = 0;
 
 		foreach (var c in combinations) {
-			currentPosition += (int)c.Direction * c.Distance;
-			currentPosition = ModPositive(currentPosition, 100);
+			var lastPosition = currentPosition;
 
-			if (currentPosition == 0) zerosCount++;
+			currentPosition += (int)c.Direction * c.Distance;
+
+			if (currentPosition > 0) {
+				zerosCount += currentPosition / 100;
+			} else if (currentPosition == 0) {
+				zerosCount++;
+			} else {
+				zerosCount += (Math.Abs(currentPosition) / 100);
+				if (lastPosition != 0) zerosCount++;
+			}
+
+			currentPosition = ModPositive(currentPosition, 100);
 		}
 
 		return zerosCount;
